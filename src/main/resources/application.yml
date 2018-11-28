@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev
+    active: prod
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://lollipop.yorhp.com:3306/fileManager
@@ -8,6 +8,10 @@ spring:
     password: Dhht2018
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true
 
+  servlet:
+      multipart:
+        max-file-size: 1000MB
+        max-request-size: 1000MB

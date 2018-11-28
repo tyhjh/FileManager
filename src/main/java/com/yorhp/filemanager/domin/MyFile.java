@@ -1,18 +1,17 @@
 package com.yorhp.filemanager.domin;
 
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Transient;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.File;
 
 @Entity
 public class MyFile {
 
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue(generator="system-uuid")
+    @GenericGenerator(name="system-uuid", strategy = "uuid")
     private String myFileId;
 
     @Transient

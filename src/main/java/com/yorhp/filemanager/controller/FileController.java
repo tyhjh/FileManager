@@ -12,12 +12,17 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.File;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 @RestController
 @Validated
@@ -29,21 +34,42 @@ public class FileController {
     FileServiceImpl fileService;
 
     @PostMapping("/file")
-    public Result<String> uploadFile(@Valid MyFile myFile, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return ResultUtil.erro(101, bindingResult.getFieldError().getDefaultMessage());
+    public Result<String> uploadFile(@RequestParam("fileTag")String fileTag,
+                                     @RequestParam("myFile") MultipartFile file) {
+        return ResultUtil.success(fileService.saveFile(fileTag,file));
+    }
+
+
+    @GetMapping("/file")
+    public void getFile(@RequestParam("myFileId") String myFileId, HttpServletResponse response) {
+        File file = fileService.getFile(myFileId);
+        boolean isOnLine = true;
+        try {
+            BufferedInputStream br = new BufferedInputStream(new FileInputStream(file));
+            byte[] buf = new byte[1024];
+            int len = 0;
+            response.reset();
+            if (isOnLine) { // 在线打开方式
+                URL u = new URL("file:///" + file.getAbsolutePath());
+                response.setContentType(u.openConnection().getContentType());
+                response.setHeader("Content-Disposition", "inline; filename=" + file.getName());
+            } else { // 纯下载方式
+                response.setContentType("application/x-msdownload");
+                response.setHeader("Content-Disposition", "attachment; filename=" + file.getName());
+            }
+            OutputStream out = response.getOutputStream();
+            while ((len = br.read(buf)) > 0)
+                out.write(buf, 0, len);
+            br.close();
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return ResultUtil.success(fileService.saveFile(myFile));
     }
 
-
-    @GetMapping("")
-    public byte[] getFile(String myFileId, HttpServletRequest request, HttpServletResponse response) {
-        File file = new File("/Users/dhht/Downloads/test.png");
-        response.setContentType("application/force-download");// 设置强制下载不打开
-        response.addHeader("Content-Disposition", "attachment;fileName=" + file.getName());// 设置文件名
-        return FileUtil.getBytes(file);
-        //return fileService.getFile(myFileId);
-    }
 
 }

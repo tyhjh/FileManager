@@ -1,7 +1,10 @@
 package com.yorhp.filemanager.util;
 
 
+import com.yorhp.filemanager.enums.ResultEnum;
+import com.yorhp.filemanager.exception.MlException;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -38,11 +41,15 @@ public class FileUtil {
 
     public static File saveFile(File file, String dir) {
         String time = String.valueOf(System.currentTimeMillis());
-        String path = dir + (time.substring(time.length() - 4, time.length())) + file.getName();
-        File newFile = new File(path);
+        String path = null;
+        File newFile=null;
         try {
-            copyFile(file, newFile);
+            path = dir + (time.substring(time.length() - 3, time.length())) + URLEncoder.encode(file.getName(), "UTF-8");
+            newFile = new File(path);
+            copyFileUsingFileStreams(file, newFile);
             newFile.createNewFile();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -50,19 +57,21 @@ public class FileUtil {
     }
 
 
-    public static void copyFile(File source, File dest) throws IOException {
-        FileChannel inputChannel = null;
-        FileChannel outputChannel = null;
+    private static void copyFileUsingFileStreams(File source, File dest)
+            throws IOException {
+        InputStream input = null;
+        OutputStream output = null;
         try {
-            inputChannel = new FileInputStream(source).getChannel();
-            outputChannel = new FileOutputStream(dest).getChannel();
-            outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
-        } catch (Exception e) {
-            e.printStackTrace();
+            input = new FileInputStream(source);
+            output = new FileOutputStream(dest);
+            byte[] buf = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = input.read(buf)) > 0) {
+                output.write(buf, 0, bytesRead);
+            }
         } finally {
-            if (outputChannel != null)
-                outputChannel.close();
-            inputChannel.close();
+            input.close();
+            output.close();
         }
     }
 
@@ -112,6 +121,18 @@ public class FileUtil {
         byte[] s = out.toByteArray();
         return s;
 
+    }
+
+
+    public static File downLoadFile(MultipartFile file) throws IOException {
+        if (file.isEmpty())
+            throw new MlException(ResultEnum.UPLOADFILE_NOTEXIT);
+        File uploadFile = new File(file.getOriginalFilename());
+        BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(uploadFile));
+        out.write(file.getBytes());
+        out.flush();
+        out.close();
+        return uploadFile;
     }
 
 }
