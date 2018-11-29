@@ -34,15 +34,22 @@ public class FileController {
     FileServiceImpl fileService;
 
     @PostMapping("/file")
-    public Result<String> uploadFile(@RequestParam("fileTag")String fileTag,
+    public Result<String> uploadFile(@RequestParam("fileTag") String fileTag,
+                                     @RequestParam("userId") String userId,
                                      @RequestParam("myFile") MultipartFile file) {
-        return ResultUtil.success(fileService.saveFile(fileTag,file));
+        return ResultUtil.success(fileService.saveFile(fileTag,userId, file));
     }
 
 
-    @GetMapping("/file")
-    public void getFile(@RequestParam("myFileId") String myFileId, HttpServletResponse response) {
-        File file = fileService.getFile(myFileId);
+    @GetMapping("/files")
+    public Result<MyFile> getFile(@RequestParam("userId") String userId) {
+        return ResultUtil.success(fileService.getFiles(userId));
+    }
+}
+
+
+
+  /*File file = fileService.getFile(myFileId);
         boolean isOnLine = true;
         try {
             BufferedInputStream br = new BufferedInputStream(new FileInputStream(file));
@@ -69,7 +76,4 @@ public class FileController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-
-}
+    }*/

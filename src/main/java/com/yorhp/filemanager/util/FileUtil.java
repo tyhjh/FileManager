@@ -7,8 +7,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.lang.reflect.Field;
-import java.net.URLEncoder;
 import java.nio.channels.FileChannel;
 
 public class FileUtil {
@@ -38,16 +36,15 @@ public class FileUtil {
         return null;
     }
 
-
-    public static File saveFile(File file, String dir) {
+    public static File saveFile(MultipartFile multipartFile, String dir) {
         String time = String.valueOf(System.currentTimeMillis());
         String path = null;
-        File newFile=null;
+        File newFile = null;
         try {
-            path = dir + (time.substring(time.length() - 3, time.length())) + URLEncoder.encode(file.getName(), "UTF-8");
-            newFile = new File(path);
-            copyFileUsingFileStreams(file, newFile);
-            newFile.createNewFile();
+            path = dir+multipartFile.getOriginalFilename();
+            path=path.substring(0,path.lastIndexOf("."))+"#"+ (time.substring(time.length() - 3, time.length()))+path.substring(path.lastIndexOf("."),path.length());
+            newFile=new File(path);
+            multipartFile.transferTo(newFile);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -95,10 +92,11 @@ public class FileUtil {
 
     /**
      * 将文件转为byte[]
+     *
      * @param file 文件
      * @return
      */
-    public static byte[] getBytes(File file){
+    public static byte[] getBytes(File file) {
         ByteArrayOutputStream out = null;
         try {
             FileInputStream in = new FileInputStream(file);
@@ -124,10 +122,10 @@ public class FileUtil {
     }
 
 
-    public static File downLoadFile(MultipartFile file) throws IOException {
+    public static File downLoadFile(MultipartFile file, String path) throws IOException {
         if (file.isEmpty())
             throw new MlException(ResultEnum.UPLOADFILE_NOTEXIT);
-        File uploadFile = new File(file.getOriginalFilename());
+        File uploadFile = new File(path);
         BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(uploadFile));
         out.write(file.getBytes());
         out.flush();

@@ -1,7 +1,6 @@
 package com.yorhp.filemanager.domin;
 
-
-import org.hibernate.annotations.GenericGenerator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -10,12 +9,12 @@ import java.io.File;
 @Entity
 public class MyFile {
 
-    @Id @GeneratedValue(generator="system-uuid")
-    @GenericGenerator(name="system-uuid", strategy = "uuid")
-    private String myFileId;
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Long myFileId;
 
-    @Transient
-    File file;
+    //文件URL地址
+    private String fileUrl;
 
     private String userId;
 
@@ -48,14 +47,6 @@ public class MyFile {
     private Long createTime;
 
 
-    public String getMyFileId() {
-        return myFileId;
-    }
-
-    public void setMyFileId(String myFileId) {
-        this.myFileId = myFileId;
-    }
-
     public String getFileName() {
         return fileName;
     }
@@ -64,6 +55,7 @@ public class MyFile {
         this.fileName = fileName;
     }
 
+    @JsonIgnore
     public String getFilePath() {
         return filePath;
     }
@@ -96,6 +88,7 @@ public class MyFile {
         this.fileTag = fileTag;
     }
 
+    @JsonIgnore
     public Integer getVisitTime() {
         return visitTime;
     }
@@ -104,6 +97,7 @@ public class MyFile {
         this.visitTime = visitTime;
     }
 
+    @JsonIgnore
     public Boolean getCanRead() {
         return canRead;
     }
@@ -112,6 +106,7 @@ public class MyFile {
         this.canRead = canRead;
     }
 
+    @JsonIgnore
     public Long getLastVisitTime() {
         return lastVisitTime;
     }
@@ -128,19 +123,20 @@ public class MyFile {
         this.createTime = createTime;
     }
 
-    public File getFile() {
-        return file;
-    }
-
-    public void setFile(File file) {
-        this.file = file;
-    }
-
+    @JsonIgnore
     public String getUserId() {
         return userId;
     }
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getFileUrl() {
+        return fileUrl;
+    }
+
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
     }
 }

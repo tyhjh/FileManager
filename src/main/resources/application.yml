@@ -1,8 +1,8 @@
 spring:
   profiles:
-    active: prod
+    active: dev
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://lollipop.yorhp.com:3306/fileManager
     username: dhht
     password: Dhht2018

@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.List;
 
 @Service
 public class FileServiceImpl implements FileService {
@@ -28,24 +29,26 @@ public class FileServiceImpl implements FileService {
 
     @Override
     @Transactional
-    public String saveFile(String tag, MultipartFile file) {
+    public String saveFile(String tag, String userId, MultipartFile file) {
         try {
             MyFile myFile = new MyFile();
             myFile.setFileTag(tag);
-            File newFile = FileUtil.saveFile(FileUtil.downLoadFile(file), App.appDir);
+            File newFile = FileUtil.saveFile(file, App.appDir);
             String fileName = newFile.getName();
             myFile.setCreateTime(System.currentTimeMillis());
             myFile.setFileName(newFile.getName());
             myFile.setFilePath(newFile.getPath());
+            myFile.setUserId(userId);
             myFile.setFileSize(FileUtil.getFileSize(newFile));
-            myFile.setFileType(fileName.substring(fileName.lastIndexOf('.'), fileName.length()));
-            myFile.setMyFileId(myFile.getFileName());
+            String type = fileName.substring(fileName.lastIndexOf('.'), fileName.length());
+            if (!type.isEmpty()) {
+                type.toUpperCase();
+            }
+            myFile.setFileType(type);
+            myFile.setFileUrl(App.domainName + URLEncoder.encode(myFile.getFileName(), "UTF-8"));
             myFileRepository.save(myFile);
-            File file1 = new File(file.getOriginalFilename());
-            if (file1.exists())
-                file1.delete();
-            return App.domainName + myFile.getMyFileId();
-        } catch (java.io.IOException e) {
+            return myFile.getFileUrl();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         throw new MlException(ResultEnum.LACK_VALUE);
@@ -53,12 +56,8 @@ public class FileServiceImpl implements FileService {
 
     @Override
     @Transactional
-    public File getFile(String fileId) {
-        MyFile myFile = myFileRepository.findMyFileByMyFileIdAndCanRead(fileId, true);
-        File file = new File(myFile.getFilePath());
-        myFile.setLastVisitTime(System.currentTimeMillis());
-        myFile.setVisitTime(myFile.getVisitTime() + 1);
-        myFileRepository.save(myFile);
-        return file;
+    public List<MyFile> getFiles(String userId) {
+        List<MyFile> myFile = myFileRepository.findMyFilesByUserIdAndCanReadOrderByCreateTime(userId, true);
+        return myFile;
     }
 }
