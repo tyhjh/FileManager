@@ -32,7 +32,7 @@ public interface MyFileRepository extends JpaRepository<MyFile, Integer> {
      * @param canRead
      * @return
      */
-    public List<MyFile> findMyFilesByUserIdAndCanReadOrderByCreateTime(String userId, Boolean canRead);
+    public List<MyFile> findMyFilesByUserIdAndCanReadOrderByCreateTimeAsc(String userId, Boolean canRead);
 
     public MyFile findFirstByMyFileId(Long myFileId);
 

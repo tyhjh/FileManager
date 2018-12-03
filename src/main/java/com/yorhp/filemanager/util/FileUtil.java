@@ -160,13 +160,13 @@ public class FileUtil {
      * @param targetFileSize 大概压缩后大小
      * @return
      */
-    public static File compressPic(File originFile, String savePath, double targetFileSize, int targetFileWidth) {
+    public static File compressPic(File originFile, String savePath, double targetFileSize, float targetFileWidth) {
         float scale = 1f;
         float quality = 1f;
         try {
             double fileSize = getFileSize(originFile);
             BufferedImage sourceImg = ImageIO.read(new FileInputStream(originFile));
-            scale = targetFileWidth / sourceImg.getHeight();
+            scale = targetFileWidth / sourceImg.getWidth();
             if (scale > 1) {
                 scale = 1;
             }
@@ -190,6 +190,19 @@ public class FileUtil {
         }
         return new File(savePath);
     }
+
+    /*public static void main(String[] args) {
+        File originFile = new File("/Users/Tyhj/Desktop/test.jpg");
+        BufferedImage sourceImg = null;
+        try {
+            sourceImg = ImageIO.read(new FileInputStream(originFile));
+            int width = sourceImg.getWidth();
+            float scale = (500f / width);
+            System.out.println("scale" + scale);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }*/
 
 
 }
