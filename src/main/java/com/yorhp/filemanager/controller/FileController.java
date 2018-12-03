@@ -10,10 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
@@ -23,6 +20,7 @@ import javax.validation.Valid;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 @RestController
 @Validated
@@ -34,18 +32,30 @@ public class FileController {
     FileServiceImpl fileService;
 
     @PostMapping("/file")
-    public Result<String> uploadFile(@RequestParam("fileTag") String fileTag,
-                                     @RequestParam("userId") String userId,
-                                     @RequestParam("myFile") MultipartFile file) {
-        return ResultUtil.success(fileService.saveFile(fileTag,userId, file));
+    public Result<MyFile> uploadFile(
+            @Valid MyFile myFile, BindingResult bindingResult,
+            @RequestParam("myFile") MultipartFile file) {
+        if (bindingResult.hasErrors()) {
+            return ResultUtil.erro(101, bindingResult.getFieldError().getDefaultMessage());
+        }
+        return ResultUtil.success(fileService.saveFile(myFile, file));
     }
 
 
     @GetMapping("/files")
-    public Result<MyFile> getFile(@RequestParam("userId") String userId) {
+    public Result<List<MyFile>> getFile(@RequestParam("userId") String userId) {
         return ResultUtil.success(fileService.getFiles(userId));
     }
+
+
+    @DeleteMapping("/file")
+    public Result<String> deleteFile(@RequestParam("myFileId") Long userId) {
+        fileService.deleteFile(userId);
+        return ResultUtil.success();
+    }
+
 }
+
 
 
 

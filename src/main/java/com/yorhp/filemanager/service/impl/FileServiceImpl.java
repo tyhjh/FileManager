@@ -7,6 +7,7 @@ import com.yorhp.filemanager.exception.MlException;
 import com.yorhp.filemanager.repository.MyFileRepository;
 import com.yorhp.filemanager.service.FileService;
 import com.yorhp.filemanager.util.FileUtil;
+import net.coobird.thumbnailator.Thumbnails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,31 +24,27 @@ import java.util.List;
 public class FileServiceImpl implements FileService {
 
     private final static Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
-
+    private static double MINI_FILE_SIZE = 0.3;
+    private static int MINI_FILE_WIDTH = 500;
     @Autowired
     MyFileRepository myFileRepository;
 
     @Override
     @Transactional
-    public String saveFile(String tag, String userId, MultipartFile file) {
+    public MyFile saveFile(MyFile myFile, MultipartFile file) {
         try {
-            MyFile myFile = new MyFile();
-            myFile.setFileTag(tag);
             File newFile = FileUtil.saveFile(file, App.appDir);
-            String fileName = newFile.getName();
             myFile.setCreateTime(System.currentTimeMillis());
             myFile.setFileName(newFile.getName());
             myFile.setFilePath(newFile.getPath());
-            myFile.setUserId(userId);
             myFile.setFileSize(FileUtil.getFileSize(newFile));
-            String type = fileName.substring(fileName.lastIndexOf('.'), fileName.length());
-            if (!type.isEmpty()) {
-                type.toUpperCase();
-            }
-            myFile.setFileType(type);
+            myFile.setFileType(FileUtil.getFileType(newFile.getName()));
             myFile.setFileUrl(App.domainName + URLEncoder.encode(myFile.getFileName(), "UTF-8"));
+            File miniFile = FileUtil.compressPic(newFile, App.appDirMini + "mini_" + newFile.getName(), MINI_FILE_SIZE,MINI_FILE_WIDTH);
+            myFile.setMiniFileSize(FileUtil.getFileSize(miniFile));
+            myFile.setFileMiniUrl(App.domainName + "mini/" + URLEncoder.encode(miniFile.getName(), "UTF-8"));
             myFileRepository.save(myFile);
-            return myFile.getFileUrl();
+            return myFile;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -60,4 +57,15 @@ public class FileServiceImpl implements FileService {
         List<MyFile> myFile = myFileRepository.findMyFilesByUserIdAndCanReadOrderByCreateTime(userId, true);
         return myFile;
     }
+
+    @Override
+    public void deleteFile(Long fileId) {
+        MyFile myFile = myFileRepository.findFirstByMyFileId(fileId);
+        if (myFile == null)
+            return;
+        myFile.setCanRead(false);
+        myFileRepository.save(myFile);
+    }
+
+
 }

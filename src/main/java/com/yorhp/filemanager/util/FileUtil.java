@@ -3,9 +3,12 @@ package com.yorhp.filemanager.util;
 
 import com.yorhp.filemanager.enums.ResultEnum;
 import com.yorhp.filemanager.exception.MlException;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.channels.FileChannel;
 
@@ -41,9 +44,9 @@ public class FileUtil {
         String path = null;
         File newFile = null;
         try {
-            path = dir+multipartFile.getOriginalFilename();
-            path=path.substring(0,path.lastIndexOf("."))+"#"+ (time.substring(time.length() - 3, time.length()))+path.substring(path.lastIndexOf("."),path.length());
-            newFile=new File(path);
+            path = dir + multipartFile.getOriginalFilename();
+            path = path.substring(0, path.lastIndexOf(".")) + "#" + (time.substring(time.length() - 3, time.length())) + path.substring(path.lastIndexOf("."), path.length());
+            newFile = new File(path);
             multipartFile.transferTo(newFile);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -132,5 +135,61 @@ public class FileUtil {
         out.close();
         return uploadFile;
     }
+
+    public static String getFileType(String fileName) {
+        String type = fileName.substring(fileName.lastIndexOf('.'), fileName.length());
+        if (!type.isEmpty()) {
+            type.toUpperCase();
+        }
+        return type;
+    }
+
+    public static boolean isPic(String fileName) {
+        if (fileName.equals("PNG") || fileName.equals("JPG") || fileName.equals("JPEG")) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * 压缩文件
+     *
+     * @param originFile     原文件路径
+     * @param savePath       保存文件路径
+     * @param targetFileSize 大概压缩后大小
+     * @return
+     */
+    public static File compressPic(File originFile, String savePath, double targetFileSize, int targetFileWidth) {
+        float scale = 1f;
+        float quality = 1f;
+        try {
+            double fileSize = getFileSize(originFile);
+            BufferedImage sourceImg = ImageIO.read(new FileInputStream(originFile));
+            scale = targetFileWidth / sourceImg.getHeight();
+            if (scale > 1) {
+                scale = 1;
+            }
+            if (fileSize > 30 * targetFileSize / scale) {
+                quality = 0.3f;
+            } else if (fileSize > 20 * targetFileSize / scale) {
+                quality = 0.4f;
+            } else if (fileSize > 10 * targetFileSize / scale) {
+                quality = 0.5f;
+            } else if (fileSize > 5 * targetFileSize / scale) {
+                quality = 0.6f;
+            } else {
+                quality = 0.7f;
+            }
+            Thumbnails.of(originFile.getPath())
+                    .scale(scale)
+                    .outputQuality(quality)
+                    .toFile(savePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new File(savePath);
+    }
+
 
 }

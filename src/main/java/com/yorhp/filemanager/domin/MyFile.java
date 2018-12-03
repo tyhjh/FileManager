@@ -10,13 +10,18 @@ import java.io.File;
 public class MyFile {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @NotNull(message = "myFileId不能为空")
     private Long myFileId;
 
     //文件URL地址
     private String fileUrl;
 
+    //文件缩略图
+    private String fileMiniUrl;
+
+    @NotNull(message = "userId不能为空")
     private String userId;
+
 
     //文件名字
     private String fileName;
@@ -24,14 +29,19 @@ public class MyFile {
     //文件地址
     private String filePath;
 
+    private String localPath;
+
     //文件类型
     private String fileType;
 
     //文件大小
     private Double fileSize;
 
+    //缩略图文件大小
+    private Double miniFileSize;
+
     //文件标签
-    @NotNull(message = "文件标签不能为空")
+    @NotNull(message = "fileTag不能为空")
     private String fileTag;
 
     //访问次数
@@ -39,6 +49,7 @@ public class MyFile {
 
     //最后访问时间
     private Long lastVisitTime;
+
 
     //是否禁止访问
     private Boolean canRead = true;
@@ -138,5 +149,38 @@ public class MyFile {
 
     public void setFileUrl(String fileUrl) {
         this.fileUrl = fileUrl;
+    }
+
+
+    public Long getMyFileId() {
+        return myFileId;
+    }
+
+    public void setMyFileId(Long myFileId) {
+        this.myFileId = myFileId;
+    }
+
+    public String getLocalPath() {
+        return localPath;
+    }
+
+    public void setLocalPath(String localPath) {
+        this.localPath = localPath;
+    }
+
+    public String getFileMiniUrl() {
+        return fileMiniUrl;
+    }
+
+    public void setFileMiniUrl(String fileMiniUrl) {
+        this.fileMiniUrl = fileMiniUrl;
+    }
+
+    public Double getMiniFileSize() {
+        return miniFileSize;
+    }
+
+    public void setMiniFileSize(Double miniFileSize) {
+        this.miniFileSize = miniFileSize;
     }
 }

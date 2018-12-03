@@ -34,4 +34,6 @@ public interface MyFileRepository extends JpaRepository<MyFile, Integer> {
      */
     public List<MyFile> findMyFilesByUserIdAndCanReadOrderByCreateTime(String userId, Boolean canRead);
 
+    public MyFile findFirstByMyFileId(Long myFileId);
+
 }
