@@ -161,6 +161,7 @@ public class FileUtil {
      * @return
      */
     public static File compressPic(File originFile, String savePath, double targetFileSize, float targetFileWidth) {
+
         float scale = 1f;
         float quality = 1f;
         try {
