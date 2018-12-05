@@ -25,7 +25,7 @@ public class FileServiceImpl implements FileService {
 
     private final static Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
     private static double MINI_FILE_SIZE = 0.3;
-    private static int MINI_FILE_WIDTH = 500;
+    private static int MINI_FILE_WIDTH = 300;
     @Autowired
     MyFileRepository myFileRepository;
 
@@ -40,7 +40,6 @@ public class FileServiceImpl implements FileService {
             myFile.setFileSize(FileUtil.getFileSize(newFile));
             myFile.setFileType(FileUtil.getFileType(newFile.getName()));
             myFile.setFileUrl(App.domainName + URLEncoder.encode(myFile.getFileName(), "UTF-8"));
-
             if (FileUtil.isPic(newFile.getName())) {
                 File miniFile = FileUtil.compressPic(newFile, App.appDirMini + "mini_" + newFile.getName(), MINI_FILE_SIZE, MINI_FILE_WIDTH);
                 myFile.setMiniFileSize(FileUtil.getFileSize(miniFile));

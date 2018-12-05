@@ -139,13 +139,14 @@ public class FileUtil {
     public static String getFileType(String fileName) {
         String type = fileName.substring(fileName.lastIndexOf('.'), fileName.length());
         if (!type.isEmpty()) {
-            type.toUpperCase();
+            type = type.toUpperCase();
         }
         return type;
     }
 
     public static boolean isPic(String fileName) {
-        if (fileName.equals("PNG") || fileName.equals("JPG") || fileName.equals("JPEG")) {
+        String type = getFileType(fileName);
+        if (type.equals(".PNG") || type.equals(".JPG") || type.equals(".JPEG")) {
             return true;
         }
         return false;
@@ -192,18 +193,11 @@ public class FileUtil {
         return new File(savePath);
     }
 
-    /*public static void main(String[] args) {
-        File originFile = new File("/Users/Tyhj/Desktop/test.jpg");
-        BufferedImage sourceImg = null;
-        try {
-            sourceImg = ImageIO.read(new FileInputStream(originFile));
-            int width = sourceImg.getWidth();
-            float scale = (500f / width);
-            System.out.println("scale" + scale);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
+    public static void main(String[] args) {
+        File originFile = new File("/Users/Tyhj/Desktop/test.Jpg");
+        System.out.println(isPic(originFile.getName()));
+
+    }
 
 
 }
