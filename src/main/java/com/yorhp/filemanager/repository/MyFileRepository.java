@@ -14,7 +14,7 @@ public interface MyFileRepository extends JpaRepository<MyFile, Integer> {
      * @param canRead  图片是否可用
      * @return
      */
-    public MyFile findMyFileByMyFileIdAndCanRead(String myfileId, Boolean canRead);
+    MyFile findMyFileByMyFileIdAndCanRead(String myfileId, Boolean canRead);
 
     /**
      * 根据文件名匹配文件
@@ -23,17 +23,42 @@ public interface MyFileRepository extends JpaRepository<MyFile, Integer> {
      * @param canRead
      * @return
      */
-    public List<MyFile> findMyFilesByFileNameAndCanRead(String fileName, Boolean canRead);
+    List<MyFile> findMyFilesByFileNameAndCanRead(String fileName, Boolean canRead);
 
     /**
-     * 根据用户查找ID
+     * 根据用户查找
      *
      * @param userId
      * @param canRead
      * @return
      */
-    public List<MyFile> findMyFilesByUserIdAndCanReadOrderByCreateTimeAsc(String userId, Boolean canRead);
+    List<MyFile> findMyFilesByUserIdAndCanReadOrderByCreateTimeAsc(String userId, Boolean canRead);
 
-    public MyFile findFirstByMyFileId(Long myFileId);
+    /**
+     *
+     * @param myFileId
+     * @return
+     */
+    MyFile findFirstByMyFileId(Long myFileId);
+
+    /**
+     * 根据用户和标签查找图片
+     *
+     * @param userId
+     * @param tag
+     * @param canRead
+     * @return
+     */
+    List<MyFile> findMyFilesByUserIdAndFileTagAndCanReadOrderByCreateTimeAsc(String userId, String tag, Boolean canRead);
+
+
+    /**
+     * 获取所有图片
+     * @param userId
+     * @param tag
+     * @param canRead
+     * @return
+     */
+    List<MyFile> findMyFilesByUserIdAndFileTagNotAndCanReadOrderByCreateTimeAsc(String userId, String tag, Boolean canRead);
 
 }

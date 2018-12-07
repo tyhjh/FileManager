@@ -54,36 +54,10 @@ public class FileController {
         return ResultUtil.success();
     }
 
+    @GetMapping("/tag/files")
+    public Result<List<MyFile>> getFilesByTag(@RequestParam("userId") String userId,
+                                              @RequestParam("fileTag") String fileTag) {
+        return ResultUtil.success(fileService.getFiles(userId, fileTag));
+    }
+
 }
-
-
-
-
-  /*File file = fileService.getFile(myFileId);
-        boolean isOnLine = true;
-        try {
-            BufferedInputStream br = new BufferedInputStream(new FileInputStream(file));
-            byte[] buf = new byte[1024];
-            int len = 0;
-            response.reset();
-            if (isOnLine) { // 在线打开方式
-                URL u = new URL("file:///" + file.getAbsolutePath());
-                response.setContentType(u.openConnection().getContentType());
-                response.setHeader("Content-Disposition", "inline; filename=" + file.getName());
-            } else { // 纯下载方式
-                response.setContentType("application/x-msdownload");
-                response.setHeader("Content-Disposition", "attachment; filename=" + file.getName());
-            }
-            OutputStream out = response.getOutputStream();
-            while ((len = br.read(buf)) > 0)
-                out.write(buf, 0, len);
-            br.close();
-            out.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
