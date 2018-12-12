@@ -25,7 +25,6 @@ public class FileServiceImpl implements FileService {
     private static double MINI_FILE_SIZE = 0.3;
     private static int MINI_FILE_WIDTH = 300;
     private static String RECYCLE_TAG = "回收站";
-    private static String ALL_TAG = "所有图片";
     @Autowired
     MyFileRepository myFileRepository;
 
@@ -60,7 +59,7 @@ public class FileServiceImpl implements FileService {
     @Override
     @Transactional
     public List<MyFile> getFiles(String userId) {
-        List<MyFile> myFiles = myFileRepository.findMyFilesByUserIdAndCanReadOrderByCreateTimeAsc(userId, true);
+        List<MyFile> myFiles = myFileRepository.findMyFilesByUserIdAndFileTagNotAndCanReadOrderByCreateTimeAsc(userId, RECYCLE_TAG, true);
         return myFiles;
     }
 
@@ -71,25 +70,19 @@ public class FileServiceImpl implements FileService {
             return;
         //删除回收站的文件
         if (RECYCLE_TAG.equals(myFile.getFileTag())) {
-            File file = new File(myFile.getFilePath());
-            if (file.exists()) {
-                file.delete();
-            }
+            FileUtil.deleteFile(myFile.getFilePath());
+            FileUtil.deleteFile(myFile.getMiniPath());
             myFileRepository.delete(myFile);
+
         } else {//把文件放入回收站
             myFile.setFileTag(RECYCLE_TAG);
+            myFileRepository.save(myFile);
         }
-        myFileRepository.save(myFile);
     }
 
     @Override
-    public List<MyFile> getFiles(String userId, String tag) {
-        List<MyFile> myFiles;
-        if (ALL_TAG.equals(tag)) {
-            myFiles = myFileRepository.findMyFilesByUserIdAndFileTagNotAndCanReadOrderByCreateTimeAsc(userId, RECYCLE_TAG, true);
-        } else {
-            myFiles = myFileRepository.findMyFilesByUserIdAndFileTagAndCanReadOrderByCreateTimeAsc(userId, tag, true);
-        }
+    public List<MyFile> getFilesByTag(String userId, String tag) {
+        List<MyFile> myFiles = myFileRepository.findMyFilesByUserIdAndFileTagAndCanReadOrderByCreateTimeAsc(userId, tag, true);
         return myFiles;
     }
 

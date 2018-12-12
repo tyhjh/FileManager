@@ -29,6 +29,13 @@ public class FileUtil {
         }
     }
 
+    public static void deleteFile(String path) {
+        File file1 = new File(path);
+        if (file1.exists()) {
+            file1.delete();
+        }
+    }
+
     /**
      * 获取文件名
      *

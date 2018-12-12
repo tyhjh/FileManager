@@ -18,5 +18,7 @@ public interface FileService {
     void deleteFile(Long fileId);
 
     //根据文件ID和TAG获取文件
-    List<MyFile> getFiles(String fileId,String tag);
+    List<MyFile> getFilesByTag(String fileId,String tag);
+
+
 }

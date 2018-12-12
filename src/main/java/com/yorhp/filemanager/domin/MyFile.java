@@ -71,6 +71,11 @@ public class MyFile {
         return filePath;
     }
 
+    @JsonIgnore
+    public String getMiniPath() {
+        return App.appDirMini + "mini_" + fileName;
+    }
+
     public void setFilePath(String filePath) {
         this.filePath = filePath;
     }
@@ -182,5 +187,27 @@ public class MyFile {
 
     public void setMiniFileSize(Double miniFileSize) {
         this.miniFileSize = miniFileSize;
+    }
+
+
+    @Override
+    public String toString() {
+        return "MyFile{" +
+                "myFileId=" + myFileId +
+                ", fileUrl='" + fileUrl + '\'' +
+                ", fileMiniUrl='" + fileMiniUrl + '\'' +
+                ", userId='" + userId + '\'' +
+                ", fileName='" + fileName + '\'' +
+                ", filePath='" + filePath + '\'' +
+                ", localPath='" + localPath + '\'' +
+                ", fileType='" + fileType + '\'' +
+                ", fileSize=" + fileSize +
+                ", miniFileSize=" + miniFileSize +
+                ", fileTag='" + fileTag + '\'' +
+                ", visitTime=" + visitTime +
+                ", lastVisitTime=" + lastVisitTime +
+                ", canRead=" + canRead +
+                ", createTime=" + createTime +
+                '}';
     }
 }

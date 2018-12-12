@@ -57,7 +57,7 @@ public class FileController {
     @GetMapping("/tag/files")
     public Result<List<MyFile>> getFilesByTag(@RequestParam("userId") String userId,
                                               @RequestParam("fileTag") String fileTag) {
-        return ResultUtil.success(fileService.getFiles(userId, fileTag));
+        return ResultUtil.success(fileService.getFilesByTag(userId, fileTag));
     }
 
 }
