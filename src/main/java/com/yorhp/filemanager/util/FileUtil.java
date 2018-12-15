@@ -200,11 +200,5 @@ public class FileUtil {
         return new File(savePath);
     }
 
-    public static void main(String[] args) {
-        File originFile = new File("/Users/Tyhj/Desktop/test.Jpg");
-        System.out.println(isPic(originFile.getName()));
-
-    }
-
 
 }

@@ -60,4 +60,9 @@ public class FileController {
         return ResultUtil.success(fileService.getFilesByTag(userId, fileTag));
     }
 
+    @GetMapping("/test")
+    public Result test() {
+        return ResultUtil.success();
+    }
+
 }
