@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     @Transactional
-    public MyFile saveFile(MyFile myFile, MultipartFile file) {
+    public MyFile savePic(MyFile myFile, MultipartFile file) {
         try {
             File newFile = FileUtil.saveFile(file, App.appDir);
             myFile.setCreateTime(System.currentTimeMillis());
@@ -54,6 +55,18 @@ public class FileServiceImpl implements FileService {
             e.printStackTrace();
         }
         throw new MlException(ResultEnum.LACK_VALUE);
+    }
+
+    @Override
+    public String saveFile(MultipartFile file) {
+        String path=null;
+        File newFile = FileUtil.saveFile(file, App.appDir);
+        try {
+            path=App.domainName + URLEncoder.encode(newFile.getName(), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return path;
     }
 
     @Override

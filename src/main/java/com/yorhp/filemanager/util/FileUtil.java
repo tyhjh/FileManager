@@ -46,6 +46,13 @@ public class FileUtil {
         return null;
     }
 
+    /**
+     * 保存文件到文件夹
+     *
+     * @param multipartFile
+     * @param dir
+     * @return
+     */
     public static File saveFile(MultipartFile multipartFile, String dir) {
         String time = String.valueOf(System.currentTimeMillis());
         String path = null;

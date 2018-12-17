@@ -8,6 +8,8 @@ import com.yorhp.filemanager.util.ResultUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,13 +34,13 @@ public class FileController {
     FileServiceImpl fileService;
 
     @PostMapping("/file")
-    public Result<MyFile> uploadFile(
+    public Result<MyFile> uploadPic(
             @Valid MyFile myFile, BindingResult bindingResult,
             @RequestParam("myFile") MultipartFile file) {
         if (bindingResult.hasErrors()) {
             return ResultUtil.erro(101, bindingResult.getFieldError().getDefaultMessage());
         }
-        return ResultUtil.success(fileService.saveFile(myFile, file));
+        return ResultUtil.success(fileService.savePic(myFile, file));
     }
 
 
@@ -63,6 +65,11 @@ public class FileController {
     @GetMapping("/test")
     public Result test() {
         return ResultUtil.success();
+    }
+
+    @PostMapping("/file/receive")
+    public Result<String> uploadFile(@RequestParam("file") MultipartFile file) {
+        return ResultUtil.success(fileService.saveFile(file));
     }
 
 }
