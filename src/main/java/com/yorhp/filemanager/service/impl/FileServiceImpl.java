@@ -94,6 +94,11 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public List<MyFile> getFiles(String fileId, String tag) {
+        return null;
+    }
+
+    @Override
     public List<MyFile> getFilesByTag(String userId, String tag) {
         List<MyFile> myFiles = myFileRepository.findMyFilesByUserIdAndFileTagAndCanReadOrderByCreateTimeAsc(userId, tag, true);
         return myFiles;
