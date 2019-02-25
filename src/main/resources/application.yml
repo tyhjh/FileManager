@@ -3,9 +3,9 @@ spring:
     active: prod
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/fileManager?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT
-    username: tyhj
-    password: 4444
+    url: jdbc:mysql://lollipop.yorhp.com:3306/fileManager
+    username: dhht
+    password: Dhht2018
   jpa:
     hibernate:
       ddl-auto: update
@@ -15,3 +15,5 @@ spring:
       multipart:
         max-file-size: 1000MB
         max-request-size: 1000MB
+
+
