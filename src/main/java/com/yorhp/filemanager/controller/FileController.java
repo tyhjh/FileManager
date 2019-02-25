@@ -8,6 +8,8 @@ import com.yorhp.filemanager.util.ResultUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,13 +34,13 @@ public class FileController {
     FileServiceImpl fileService;
 
     @PostMapping("/file")
-    public Result<MyFile> uploadFile(
+    public Result<MyFile> uploadPic(
             @Valid MyFile myFile, BindingResult bindingResult,
             @RequestParam("myFile") MultipartFile file) {
         if (bindingResult.hasErrors()) {
             return ResultUtil.erro(101, bindingResult.getFieldError().getDefaultMessage());
         }
-        return ResultUtil.success(fileService.saveFile(myFile, file));
+        return ResultUtil.success(fileService.savePic(myFile, file));
     }
 
 
@@ -66,4 +68,37 @@ public class FileController {
         return ResultUtil.success();
     }
 
+    @PostMapping("/file/receive")
+    public Result<String> uploadFile(@RequestParam("file") MultipartFile file) {
+        return ResultUtil.success(fileService.saveFile(file));
+    }
+
+    /*File file = fileService.getFile(myFileId);
+        boolean isOnLine = true;
+        try {
+            BufferedInputStream br = new BufferedInputStream(new FileInputStream(file));
+            byte[] buf = new byte[1024];
+            int len = 0;
+            response.reset();
+            if (isOnLine) { // 在线打开方式
+                URL u = new URL("file:///" + file.getAbsolutePath());
+                response.setContentType(u.openConnection().getContentType());
+                response.setHeader("Content-Disposition", "inline; filename=" + file.getName());
+            } else { // 纯下载方式
+                response.setContentType("application/x-msdownload");
+                response.setHeader("Content-Disposition", "attachment; filename=" + file.getName());
+            }
+            OutputStream out = response.getOutputStream();
+            while ((len = br.read(buf)) > 0)
+                out.write(buf, 0, len);
+            br.close();
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }*/
 }
