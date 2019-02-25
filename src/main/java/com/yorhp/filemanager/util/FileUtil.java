@@ -14,6 +14,11 @@ import java.nio.channels.FileChannel;
 
 public class FileUtil {
 
+
+    public static final String PIC_TYPE_PNG = ".PNG";
+    public static final String PIC_TYPE_JPEG = ".PNG";
+    public static final String PIC_TYPE_JPG = ".PNG";
+
     /**
      * 新建文件夹
      *
@@ -140,8 +145,10 @@ public class FileUtil {
 
 
     public static File downLoadFile(MultipartFile file, String path) throws IOException {
-        if (file.isEmpty())
+        if (file.isEmpty()) {
             throw new MlException(ResultEnum.UPLOADFILE_NOTEXIT);
+        }
+
         File uploadFile = new File(path);
         BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(uploadFile));
         out.write(file.getBytes());
@@ -160,7 +167,7 @@ public class FileUtil {
 
     public static boolean isPic(String fileName) {
         String type = getFileType(fileName);
-        if (type.equals(".PNG") || type.equals(".JPG") || type.equals(".JPEG")) {
+        if (PIC_TYPE_PNG.equals(type) || PIC_TYPE_JPEG.equals(type) || PIC_TYPE_JPG.equals(type)) {
             return true;
         }
         return false;

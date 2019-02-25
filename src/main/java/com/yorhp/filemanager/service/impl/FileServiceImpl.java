@@ -59,10 +59,10 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public String saveFile(MultipartFile file) {
-        String path=null;
+        String path = null;
         File newFile = FileUtil.saveFile(file, App.appDir);
         try {
-            path=App.domainName + URLEncoder.encode(newFile.getName(), "UTF-8");
+            path = App.domainName + URLEncoder.encode(newFile.getName(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -79,8 +79,9 @@ public class FileServiceImpl implements FileService {
     @Override
     public void deleteFile(Long fileId) {
         MyFile myFile = myFileRepository.findFirstByMyFileId(fileId);
-        if (myFile == null)
+        if (myFile == null) {
             return;
+        }
         //删除回收站的文件
         if (RECYCLE_TAG.equals(myFile.getFileTag())) {
             FileUtil.deleteFile(myFile.getFilePath());
